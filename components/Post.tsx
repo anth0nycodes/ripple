@@ -17,7 +17,7 @@ const Post = () => {
           <span className="absolute text-xs top-1 -right-3">2</span>
         </div>
         <div className="relative">
-          <HeartIcon className="w-[22px] h-[22px] cursor-pointer hover:text-[#93A4E7] transition" />
+          <HeartIcon className="w-[22px] h-[22px] cursor-pointer hover:text-[#FF008A] transition" />
           <span className="absolute text-xs top-1 -right-3">2</span>
         </div>
         <div className="relative">
