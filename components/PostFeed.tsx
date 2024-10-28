@@ -1,5 +1,6 @@
 import React from "react";
 import PostInput from "./PostInput";
+import Post from "./Post";
 
 const PostFeed = () => {
   return (
@@ -8,6 +9,7 @@ const PostFeed = () => {
         Home
       </div>
       <PostInput />
+      <Post />
     </div>
   );
 };
