@@ -13,7 +13,7 @@ import Image from "next/image";
 const Sidebar = () => {
   return (
     <nav className="hidden sm:flex flex-col sticky top-0 p-3 h-screen xl:ml-20 xl:mr-10">
-      <div className="relative h-full">
+      <div className="relative h-full flex flex-col items-center">
         <div className="py-3">
           <Image
             src={"/assets/ripple-logo.png"}
@@ -34,7 +34,19 @@ const Sidebar = () => {
             Ripple
           </button>
         </ul>
-        <div className="absolute bottom-0">User Info</div>
+        <div className="absolute bottom-3 flex items-center space-x-2 hover:bg-gray-500 hover:bg-opacity-10 transition xl:p-3 xl:pr-6 rounded-full cursor-pointer">
+          <Image
+            src={"/assets/profile-pic.png"}
+            width={36}
+            height={36}
+            alt="Profile Picture"
+            className="w-9 h-9"
+          />
+          <div className="hidden xl:flex flex-col text-sm">
+            <span className="font-bold">Guest</span>
+            <span className="text-gray-500">@guest234</span>
+          </div>
+        </div>
       </div>
     </nav>
   );

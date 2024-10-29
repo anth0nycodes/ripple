@@ -14,11 +14,11 @@ const PostInput = () => {
       />
       <div className="w-full">
         <textarea
-          className="resize-none outline-none w-full min-h-[50px] text-lg border-b border-gray-100"
+          className="resize-none outline-none w-full min-h-[50px] text-lg"
           placeholder="What's happening!?"
         />
 
-        <div className="flex justify-between pt-5">
+        <div className="flex justify-between pt-5 border-t border-gray-100">
           <div className="flex space-x-1.5">
             <PhotoIcon className="w-[22px] h-[22px] text-[#93A4E7]"/>
             <ChartBarIcon className="w-[22px] h-[22px] text-[#93A4E7]"/>
