@@ -75,7 +75,7 @@ const Widgets = () => {
               src={"/assets/rock.png"}
               width={56}
               height={56}
-              alt="Profile Picture of Anthony Hoang"
+              alt="Profile Picture of Dwayne Johnson"
               className="w-14 h-14 rounded-full"
             />
             <div className="flex flex-col text-sm">
@@ -91,7 +91,7 @@ const Widgets = () => {
               src={"/assets/elon.jpg"}
               width={56}
               height={56}
-              alt="Profile Picture of Anthony Hoang"
+              alt="Profile Picture of Elon Musk"
               className="w-14 h-14 rounded-full"
             />
             <div className="flex flex-col text-sm">
