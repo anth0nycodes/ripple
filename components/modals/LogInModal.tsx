@@ -17,8 +17,6 @@ const LogInModal = () => {
   const isOpen = useSelector((state: RootState) => state.modals.logInModalOpen);
 
   const dispatch: AppDispatch = useDispatch();
-
-  console.log(isOpen);
   return (
     <>
       <button
@@ -28,11 +26,7 @@ const LogInModal = () => {
         Log In
       </button>
 
-      <Modal
-        open={isOpen}
-        onClose={() => dispatch(closeLogInModal())}
-        className="flex justify-center items-center"
-      >
+      <Modal open={isOpen} className="flex justify-center items-center">
         <div
           className="w-full h-full sm:w-[600px] sm:h-fit bg-white
         sm:rounded-xl

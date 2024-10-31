@@ -9,11 +9,13 @@ import { EyeIcon, EyeSlashIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
+  updateProfile,
 } from "firebase/auth";
 import { auth } from "@/firebase";
 import { signInUser } from "@/redux/slices/userSlice";
 
 const SignUpModal = () => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -29,6 +31,19 @@ const SignUpModal = () => {
       email,
       password
     );
+    console.log(userCredentials);
+    await updateProfile(userCredentials.user, {
+      displayName: name,
+    });
+
+    dispatch(
+      signInUser({
+        name: userCredentials.user.displayName,
+        username: userCredentials.user.email!.split("@")[0],
+        email: userCredentials.user.email,
+        uid: userCredentials.user.uid,
+      })
+    );
   };
 
   useEffect(() => {
@@ -36,7 +51,7 @@ const SignUpModal = () => {
       if (!currentUser) return;
       dispatch(
         signInUser({
-          name: "",
+          name: currentUser.displayName,
           username: currentUser.email!.split("@")[0],
           email: currentUser.email,
           uid: currentUser.uid,
@@ -54,11 +69,7 @@ const SignUpModal = () => {
         Sign Up
       </button>
 
-      <Modal
-        open={isOpen}
-        onClose={() => dispatch(closeSignUpModal())}
-        className="flex justify-center items-center"
-      >
+      <Modal open={isOpen} className="flex justify-center items-center">
         <div
           className="w-full h-full sm:w-[600px] sm:h-fit bg-white
         sm:rounded-xl
@@ -75,6 +86,8 @@ const SignUpModal = () => {
                 type="text"
                 className="w-full h-[54px] border border-gray-200 outline-none pl-3 rounded-[4px] focus:border-[#93A4E7] transition"
                 placeholder="Name"
+                onChange={(event) => setName(event.target.value)}
+                value={name}
               />
               <input
                 type="email"
