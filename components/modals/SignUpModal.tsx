@@ -9,6 +9,7 @@ import { EyeIcon, EyeSlashIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
+  signInWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
 import { auth } from "@/firebase";
@@ -44,6 +45,10 @@ const SignUpModal = () => {
         uid: userCredentials.user.uid,
       })
     );
+  };
+
+  const handleGuestLogIn = async () => {
+    await signInWithEmailAndPassword(auth, "guest123456@gmail.com", "123456");
   };
 
   useEffect(() => {
@@ -123,7 +128,10 @@ const SignUpModal = () => {
               <span className="mx-2 text-sm text-center block">or</span>
               <div className="flex-grow border-t border-black"></div>
             </div>
-            <button className="bg-[#93A4E7] text-white h-[48px] rounded-full shadow-md mt-4 w-full">
+            <button
+              className="bg-[#93A4E7] text-white h-[48px] rounded-full shadow-md mt-4 w-full"
+              onClick={() => handleGuestLogIn()}
+            >
               Log In as Guest
             </button>
           </div>
