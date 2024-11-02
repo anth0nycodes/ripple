@@ -12,11 +12,14 @@ import {
   QueryDocumentSnapshot,
 } from "firebase/firestore";
 import { db } from "@/firebase";
+import { useDispatch } from "react-redux";
+import { closeLoadingScreen } from "@/redux/slices/loadingSlice";
 
 const PostFeed = () => {
   const [posts, setPosts] = useState<
     QueryDocumentSnapshot<DocumentData, DocumentData>[]
   >([]);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const q = query(collection(db, "posts"), orderBy("timestamp", "desc"));
@@ -25,13 +28,14 @@ const PostFeed = () => {
       const snapshotDocs = snapshot.docs;
 
       setPosts(snapshotDocs);
+      dispatch(closeLoadingScreen());
     });
     return unsubscribe;
   }, []);
 
   return (
     <div className="flex-grow border-x border-gray-100 max-w-2xl">
-      <div className="py-4 px-3 text-l sm:text-xl sticky z-50 bg-white bg-opacity-80 backdrop-blur-sm font-bold border-b border-gray-100">
+      <div className="py-4 px-3 text-l sm:text-xl sticky z-50 top-0 bg-white bg-opacity-80 backdrop-blur-sm font-bold border-b border-gray-100">
         Home
       </div>
       <PostInput />

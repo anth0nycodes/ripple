@@ -15,7 +15,7 @@ const Sidebar = () => {
 
   return (
     <nav className="hidden sm:flex flex-col sticky top-0 p-3 h-screen xl:ml-20 xl:mr-10">
-      <div className="relative h-full flex flex-col items-center">
+      <div className="relative h-full flex flex-col">
         <div className="py-3">
           <Image
             src={"/assets/ripple-logo.png"}

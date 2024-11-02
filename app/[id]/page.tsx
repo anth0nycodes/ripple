@@ -44,7 +44,7 @@ const page = async ({ params }: PageProps) => {
         <Sidebar />
 
         <div className="flex-grow border-x border-gray-100 max-w-2xl">
-          <div className="py-4 px-3 text-l sm:text-xl sticky z-50 bg-white bg-opacity-80 backdrop-blur-sm font-bold border-b border-gray-100 flex items-center">
+          <div className="py-4 px-3 text-l sm:text-xl sticky z-50 top-0 bg-white bg-opacity-80 backdrop-blur-sm font-bold border-b border-gray-100 flex items-center">
             <Link href="/">
               <ArrowLeftIcon className="w-5 h-5 mr-10" />
             </Link>

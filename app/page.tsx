@@ -1,3 +1,4 @@
+import LoadingScreen from "@/components/LoadingScreen";
 import CommentModal from "@/components/modals/CommentModal";
 import PostFeed from "@/components/PostFeed";
 import Sidebar from "@/components/Sidebar";
@@ -15,6 +16,7 @@ const Home = () => {
       </div>
       <CommentModal />
       <SignUpPrompt />
+      <LoadingScreen />
     </>
   );
 };
