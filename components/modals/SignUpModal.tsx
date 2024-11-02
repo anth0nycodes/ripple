@@ -32,7 +32,7 @@ const SignUpModal = () => {
       email,
       password
     );
-    console.log(userCredentials);
+
     await updateProfile(userCredentials.user, {
       displayName: name,
     });

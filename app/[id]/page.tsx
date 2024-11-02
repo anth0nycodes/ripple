@@ -22,22 +22,16 @@ const fetchPost = async (id: string) => {
   return postSnap.data();
 };
 
-interface PageProps {
-  params: {
-    id: string;
-  };
-}
-
 interface Comment {
   name: string;
   text: string;
   username: string;
 }
 
-const page = async ({ params }: PageProps) => {
+const page = async ({ params }: { params: { id: string } }) => {
   const { id } = await params;
   const post = await fetchPost(id);
-  console.log(post);
+
   return (
     <>
       <div className="text-[#0F1419] min-h-screen max-w-[1400px] mx-auto flex justify-center">
