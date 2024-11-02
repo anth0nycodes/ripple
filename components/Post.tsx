@@ -1,7 +1,11 @@
 "use client";
 
 import { db } from "@/firebase";
-import { openCommentModal, setCommentDetails } from "@/redux/slices/modalSlice";
+import {
+  openCommentModal,
+  openLogInModal,
+  setCommentDetails,
+} from "@/redux/slices/modalSlice";
 import { RootState } from "@/redux/store";
 import {
   ArrowUpTrayIcon,
@@ -34,6 +38,11 @@ const Post = ({ data, id }: PostProps) => {
   const user = useSelector((state: RootState) => state.user);
 
   const likePost = async () => {
+    if (!user.username) {
+      dispatch(openLogInModal());
+      return;
+    }
+
     const postRef = doc(db, "posts", id);
 
     if (data.likes.includes(user.uid)) {
@@ -62,6 +71,10 @@ const Post = ({ data, id }: PostProps) => {
           <ChatBubbleOvalLeftEllipsisIcon
             className="w-[22px] h-[22px] cursor-pointer hover:text-[#93A4E7] transition"
             onClick={() => {
+              if (!user.username) {
+                dispatch(openLogInModal());
+                return;
+              }
               dispatch(
                 setCommentDetails({
                   name: data.name,
