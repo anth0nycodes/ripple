@@ -26,6 +26,7 @@ interface PageProps {
   params: {
     id: string;
   };
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
 interface Comment {
@@ -34,10 +35,22 @@ interface Comment {
   username: string;
 }
 
-const page = async ({ params }: PageProps) => {
+interface Post {
+  name: string;
+  username: string;
+  text: string;
+  likes: string[];
+  comments: Comment[];
+}
+
+const Page = async ({ params, searchParams }: PageProps) => {
   const { id } = params;
-  const post = await fetchPost(id);
-  console.log(post);
+  const post = (await fetchPost(id)) as Post | undefined;
+
+  if (!post) {
+    return <div>Post not found</div>;
+  }
+
   return (
     <>
       <div className="text-[#0F1419] min-h-screen max-w-[1400px] mx-auto flex justify-center">
@@ -62,19 +75,19 @@ const page = async ({ params }: PageProps) => {
                 />
                 <div className="flex flex-col text-[15px]">
                   <span className="font-bold inline-block max-w-[60px] min-[400px]:max-w-[100px] min-[500px]:max-w-[140px] whitespace-nowrap overflow-hidden text-ellipsis">
-                    {post?.name}
+                    {post.name}
                   </span>
                   <span className="text-[#707E89] inline-block max-w-[60px] min-[400px]:max-w-[100px] min-[500px]:max-w-[140px] whitespace-nowrap overflow-hidden text-ellipsis">
-                    {post?.username}
+                    {post.username}
                   </span>
                 </div>
               </div>
               <EllipsisHorizontalIcon className="w-5 h-5" />
             </div>
-            <span className="text-[15px]">{post?.text}</span>
+            <span className="text-[15px]">{post.text}</span>
           </div>
           <div className="border-b border-gray-100 p-3 text-[15px]">
-            <span className="font-bold">{post?.likes.length}</span> Likes
+            <span className="font-bold">{post.likes.length}</span> Likes
           </div>
           <div className="border-b border-gray-100 p-3 text-[15px] flex justify-evenly">
             <ChatBubbleOvalLeftEllipsisIcon className="w-[22px] h-[22px] text-[#707E89] cursor-not-allowed" />
@@ -83,8 +96,9 @@ const page = async ({ params }: PageProps) => {
             <ArrowUpTrayIcon className="w-[22px] h-[22px] text-[#707E89] cursor-not-allowed" />
           </div>
 
-          {post?.comments.map((comment: Comment) => (
+          {post.comments.map((comment: Comment, index: number) => (
             <Comment
+              key={index}
               name={comment.name}
               username={comment.username}
               text={comment.text}
@@ -99,13 +113,14 @@ const page = async ({ params }: PageProps) => {
   );
 };
 
-export default page;
+export default Page;
 
 interface CommentProps {
   name: string;
   username: string;
   text: string;
 }
+
 const Comment = ({ name, username, text }: CommentProps) => {
   return (
     <div className="border-b border-gray-100">
