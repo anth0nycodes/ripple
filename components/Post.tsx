@@ -1,18 +1,28 @@
 "use client";
 
+import { db } from "@/firebase";
 import { openCommentModal, setCommentDetails } from "@/redux/slices/modalSlice";
+import { RootState } from "@/redux/store";
 import {
   ArrowUpTrayIcon,
   ChartBarIcon,
   ChatBubbleOvalLeftEllipsisIcon,
   HeartIcon,
 } from "@heroicons/react/24/outline";
-import { DocumentData, Timestamp } from "firebase/firestore";
+import { HeartIcon as HeartSolidIcon } from "@heroicons/react/24/solid";
+import {
+  arrayRemove,
+  arrayUnion,
+  doc,
+  DocumentData,
+  Timestamp,
+  updateDoc,
+} from "firebase/firestore";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import Moment from "react-moment";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 interface PostProps {
   data: DocumentData;
@@ -21,6 +31,22 @@ interface PostProps {
 
 const Post = ({ data, id }: PostProps) => {
   const dispatch = useDispatch();
+  const user = useSelector((state: RootState) => state.user);
+
+  const likePost = async () => {
+    const postRef = doc(db, "posts", id);
+
+    if (data.likes.includes(user.uid)) {
+      await updateDoc(postRef, {
+        likes: arrayRemove(user.uid),
+      });
+    } else {
+      await updateDoc(postRef, {
+        likes: arrayUnion(user.uid),
+      });
+    }
+  };
+
   return (
     <div className="border-b border-gray-100">
       <Link href={"/" + id}>
@@ -47,11 +73,29 @@ const Post = ({ data, id }: PostProps) => {
               dispatch(openCommentModal());
             }}
           />
-          <span className="absolute text-xs top-1 -right-3">2</span>
+          {data.comments.length > 0 && (
+            <span className="absolute text-xs top-1 -right-3">
+              {data.comments.length}
+            </span>
+          )}
         </div>
         <div className="relative">
-          <HeartIcon className="w-[22px] h-[22px] cursor-pointer hover:text-[#FF008A] transition" />
-          <span className="absolute text-xs top-1 -right-3">2</span>
+          {data.likes.includes(user.uid) ? (
+            <HeartSolidIcon
+              className="w-[22px] h-[22px] cursor-pointer text-pink-500 hover:text-pink-500 transition"
+              onClick={() => likePost()}
+            />
+          ) : (
+            <HeartIcon
+              className="w-[22px] h-[22px] cursor-pointer hover:text-pink-500 transition"
+              onClick={() => likePost()}
+            />
+          )}
+          {data.likes.length > 0 && (
+            <span className="absolute text-xs top-1 -right-3">
+              {data.likes.length}
+            </span>
+          )}
         </div>
         <div className="relative">
           <ChartBarIcon className="w-[22px] h-[22px] cursor-not-allowed" />
