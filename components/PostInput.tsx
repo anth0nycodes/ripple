@@ -1,6 +1,7 @@
 "use client";
 
 import { db } from "@/firebase";
+import { closeCommentModal } from "@/redux/slices/modalSlice";
 import { RootState } from "@/redux/store";
 import {
   CalendarIcon,
@@ -9,14 +10,28 @@ import {
   MapPinIcon,
   PhotoIcon,
 } from "@heroicons/react/24/outline";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import {
+  addDoc,
+  arrayUnion,
+  collection,
+  doc,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
 import Image from "next/image";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-const PostInput = () => {
+interface PostInputProps {
+  insideModal?: boolean;
+}
+const PostInput = ({ insideModal }: PostInputProps) => {
   const [text, setText] = useState("");
   const user = useSelector((state: RootState) => state.user);
+  const commentDetails = useSelector(
+    (state: RootState) => state.modals.commentPostDetails
+  );
+  const dispatch = useDispatch();
 
   const sendPost = async () => {
     await addDoc(collection(db, "posts"), {
@@ -30,19 +45,34 @@ const PostInput = () => {
     setText("");
   };
 
+  const sendComment = async () => {
+    const postRef = doc(db, "posts", commentDetails.id);
+    await updateDoc(postRef, {
+      comments: arrayUnion({
+        name: user.name,
+        username: user.username,
+        text: text,
+      }),
+    });
+    setText("");
+    dispatch(closeCommentModal());
+  };
+
   return (
     <div className="flex space-x-5 p-3 border-b border-gray-100">
       <Image
-        src={"/assets/ripple-logo.png"}
+        src={
+          insideModal ? "/assets/profile-pic.png" : "/assets/ripple-logo.png"
+        }
         width={44}
         height={44}
-        alt="Logo"
-        className="w-11 h-10"
+        alt={insideModal ? "Profile Picture" : "Logo"}
+        className="w-11 h-11 z-10 bg-white"
       />
       <div className="w-full">
         <textarea
           className="resize-none outline-none w-full min-h-[50px] text-lg"
-          placeholder="What's happening!?"
+          placeholder={insideModal ? "Send your reply" : "What's happening!?"}
           onChange={(event) => setText(event.target.value)}
           value={text}
         />
@@ -58,7 +88,7 @@ const PostInput = () => {
           <button
             className="bg-[#93A4E7] text-white w-[80px] h-[38px] rounded-full text-sm cursor-pointer disabled:bg-opacity-60"
             disabled={!text}
-            onClick={() => sendPost()}
+            onClick={() => (insideModal ? sendComment() : sendPost())}
           >
             Ripple
           </button>

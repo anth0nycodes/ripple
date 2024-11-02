@@ -36,7 +36,7 @@ const PostFeed = () => {
       </div>
       <PostInput />
       {posts.map((post) => (
-        <Post key={post.id} data={post.data()} />
+        <Post key={post.id} data={post.data()} id={post.id} />
       ))}
     </div>
   );
