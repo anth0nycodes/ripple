@@ -10,17 +10,19 @@ import {
   ChatBubbleOvalLeftEllipsisIcon,
   EllipsisHorizontalIcon,
   HeartIcon,
+  HomeIcon,
 } from "@heroicons/react/24/outline";
 import { doc, getDoc } from "firebase/firestore";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 
-const fetchPost = async (id: string) => {
-  const postRef = doc(db, "posts", id);
-  const postSnap = await getDoc(postRef);
-  return postSnap.data();
-};
+interface Post {
+  name: string;
+  username: string;
+  text: string;
+  likes: string[];
+  comments: Comment[];
+}
 
 interface Comment {
   name: string;
@@ -28,9 +30,33 @@ interface Comment {
   username: string;
 }
 
-const page = async ({ params }: { params: { id: string } }) => {
+const fetchPost = async (id: string) => {
+  const postRef = doc(db, "posts", id);
+  const postSnap = await getDoc(postRef);
+  return postSnap.data() as Post | undefined;
+};
+
+const page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
   const post = await fetchPost(id);
+
+  if (!post) {
+    return (
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+          <div className="text-center p-8 rounded-lg">
+            <h1 className="text-3xl font-bold text-gray-800 mb-4">Post Not Found</h1>
+            <p className="text-gray-600 mb-8">The post you're looking for doesn't exist or has been removed.</p>
+            <Link 
+              href="/" 
+              className="inline-flex items-center gap-2 px-6 py-3 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors duration-200"
+            >
+              <HomeIcon className="w-5 h-5" />
+              Return Home
+            </Link>
+          </div>
+        </div>
+      );
+  }
 
   return (
     <>
@@ -56,19 +82,19 @@ const page = async ({ params }: { params: { id: string } }) => {
                 />
                 <div className="flex flex-col text-[15px]">
                   <span className="font-bold inline-block max-w-[60px] min-[400px]:max-w-[100px] min-[500px]:max-w-[140px] whitespace-nowrap overflow-hidden text-ellipsis">
-                    {post?.name}
+                    {post.name}
                   </span>
                   <span className="text-[#707E89] inline-block max-w-[60px] min-[400px]:max-w-[100px] min-[500px]:max-w-[140px] whitespace-nowrap overflow-hidden text-ellipsis">
-                    {post?.username}
+                    {post.username}
                   </span>
                 </div>
               </div>
               <EllipsisHorizontalIcon className="w-5 h-5" />
             </div>
-            <span className="text-[15px]">{post?.text}</span>
+            <span className="text-[15px]">{post.text}</span>
           </div>
           <div className="border-b border-gray-100 p-3 text-[15px]">
-            <span className="font-bold">{post?.likes.length}</span> Likes
+            <span className="font-bold">{post.likes.length}</span> Likes
           </div>
           <div className="border-b border-gray-100 p-3 text-[15px] flex justify-evenly">
             <ChatBubbleOvalLeftEllipsisIcon className="w-[22px] h-[22px] text-[#707E89] cursor-not-allowed" />
@@ -77,8 +103,9 @@ const page = async ({ params }: { params: { id: string } }) => {
             <ArrowUpTrayIcon className="w-[22px] h-[22px] text-[#707E89] cursor-not-allowed" />
           </div>
 
-          {post?.comments.map((comment: Comment) => (
+          {post.comments.map((comment: Comment, index: number) => (
             <Comment
+              key={index}
               name={comment.name}
               username={comment.username}
               text={comment.text}
@@ -100,6 +127,7 @@ interface CommentProps {
   username: string;
   text: string;
 }
+
 const Comment = ({ name, username, text }: CommentProps) => {
   return (
     <div className="border-b border-gray-100">
